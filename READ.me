@@ -1,0 +1,66 @@
+# Simulador de Extração de Criptoativos 
+
+Este projeto é um simulador de extração de criptoativos utilizando computadores virtuais. O objetivo é simular o funcionamento de uma rede de computadores realizando a mineração de criptomoedas, levando em conta variáveis como desempenho, consumo de energia, manutenção e lucros. O projeto inclui gráficos interativos que ajudam na análise dos resultados e performance de cada computador.
+
+## Funcionalidades
+
+- **Simulação de Computadores**: Cada computador no simulador possui um conjunto de peças (processador, memória RAM, SSD, etc.) que podem falhar e precisar de manutenção.
+- **Lucros e Desempenho**: A cada execução, o sistema calcula os lucros e gera gráficos de desempenho baseados no consumo de energia e nas falhas das peças.
+- **Custo de Manutenção**: O custo de manutenção das peças também é monitorado e somado ao valor dos lucros totais.
+- **Gráficos Interativos**: O sistema gera gráficos detalhados de lucros, consumo de energia, custos de manutenção e muito mais, permitindo que o usuário analise o desempenho da rede de computadores ao longo do tempo.
+- **Avanço no Tempo**: Permite avançar o tempo da simulação e verificar os efeitos de falhas e manutenção.
+- **Manutenção de Computadores**: Simula a manutenção em um único computador ou em todos os computadores da rede, levando em conta o desgaste das peças.
+
+## Requisitos
+
+Para rodar o projeto, você precisará de:
+
+- **Python 3.x**: Recomendado para execução do código.
+- **Bibliotecas**:
+  - `matplotlib`: Para gerar os gráficos.
+  - `random`: Para simular falhas aleatórias nas peças dos computadores.
+
+Instale as bibliotecas necessárias com o seguinte comando:
+
+```bash
+pip install matplotlib
+
+Como Usar
+1. Rodar o Simulador
+Para rodar o simulador e gerar os gráficos, execute o seguinte comando no terminal dentro da pasta do projeto:
+
+bash
+Copiar código
+python src/main.py
+O script principal (main.py) irá inicializar o simulador, executar a mineração e gerar gráficos que mostram os lucros, consumo de energia e manutenção dos computadores.
+
+2. Interagir com o Menu
+Ao rodar o simulador, o menu interativo será apresentado, permitindo que o usuário escolha entre diferentes opções, como:
+
+Iniciar a simulação.
+Gerar gráficos de desempenho e lucros.
+Realizar manutenção nos computadores.
+Avançar no tempo.
+3. Gráficos Gerados
+O sistema gera os seguintes gráficos:
+
+Lucros Totais dos Computadores: Mostra o lucro total de cada computador.
+Lucros Acumulados: Exibe os lucros acumulados ao longo do tempo.
+Lucros Mensais: Apresenta os lucros mensais de cada computador.
+Lucros por Hora: Gráfico dos lucros por hora de operação.
+Desempenho: Lucros por kWh consumido.
+Comparação de Consumo de Energia vs Lucros: Compara o consumo de energia e lucros dos computadores.
+Custo de Manutenção: Custo de manutenção total por computador.
+
+
+---
+
+### Explicação:
+
+- **Funcionalidades**: Explica o que o projeto faz e o que o simulador pode realizar, como simular computadores, gerar gráficos, avançar no tempo e realizar manutenção.
+- **Requisitos**: Lista os pré-requisitos necessários para rodar o projeto, como a versão do Python e bibliotecas.
+- **Como Usar**: Instruções claras sobre como executar o simulador e interagir com o menu.
+- **Gráficos Gerados**: Detalha os tipos de gráficos que o sistema pode gerar.
+- **Licença**: Detalha a licença do projeto (MIT). 
+
+Esse `README.md` fornece uma explicação detalhada sobre o que o projeto faz, como usá-lo, como contribuir e mais. Ele é uma excelente introdução ao seu repositório.
