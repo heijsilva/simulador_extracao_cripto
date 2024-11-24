@@ -10,7 +10,7 @@ class Simulador:
         self.custo_energia_por_hora = 3.00  # Aumento no custo de energia por kWh (R$3.00 por kWh)
         self.precos_moedas = {
             "Bitcoin": 190000,
-            "Ethereum": 000,
+            "Ethereum": 5000,
             "Dogecoin": 4,
             "Litecoin": 500,
             "Solana": 225,
@@ -54,13 +54,18 @@ class Simulador:
                         print(f"  - {moeda}: {dados['quantidade']:.6f} unidades (R${dados['valor']:.2f})")
 
                 # Armazenar o valor minerado para ajuste do uso
-                ganhos_computadores.append((computador.id, valor_total_minerado))
+                ganhos_computadores.append((computador, valor_total_minerado))
 
             # Simula falhas aleatórias e diminuição da vida útil
             computador.simular_falhas(horas)
 
             # Calcular o consumo de energia com base no uso
+        if ganhos_computadores:
             maior_ganho = max(ganho for _, ganho in ganhos_computadores)
+        else:
+            maior_ganho = 0
+
+        for computador, valor_total_minerado in ganhos_computadores:
             uso_computador = 70 + (96 - 70) * (valor_total_minerado / maior_ganho) if maior_ganho > 0 else 70
 
             # Ajuste o consumo com base no uso
@@ -73,7 +78,7 @@ class Simulador:
             self.conta_energia_acumulada += custo_energia_computador
 
             # Registrar o consumo de energia por hora
-            for hora in range(horas):
+            for _ in range(horas):
                 self.energia_consumida_por_hora[computador.id].append(consumo_ajustado)
 
             # Atribui o uso calculado ao computador
