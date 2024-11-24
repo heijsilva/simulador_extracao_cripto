@@ -11,27 +11,27 @@ class Computador:
             "Processador Ryzen 7": {
                 "estado": True,
                 "custo_manutencao": 2400,
-                "vida_util": 1000,
+                "vida_util": 40000,
             },
             "Memória RAM 16GB": {
                 "estado": True,
                 "custo_manutencao": 400,
-                "vida_util": 800,
+                "vida_util": 90000,
             },
             "SSD 512GB": {
                 "estado": True,
                 "custo_manutencao": 390,
-                "vida_util": 1500,
+                "vida_util": 40000,
             },
             "Fonte 800W": {
                 "estado": True,
                 "custo_manutencao": 890,
-                "vida_util": 1000,
+                "vida_util": 35000,
             },
             "Placa de Vídeo RTX 4090": {
                 "estado": True,
                 "custo_manutencao": 2899,
-                "vida_util": 1200,
+                "vida_util": 29000,
             }
         }
         self.gasto_manutencao = 0
