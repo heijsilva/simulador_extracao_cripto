@@ -60,10 +60,15 @@ class Computador:
                     info["estado"] = False
                     self.estado = "Desligado"
                     print(f"A peça {peça} do computador {self.id} quebrou devido ao fim da vida útil!")
-                if random.random() < 0.001 * horas:  # Chance de falha reduzida
+                if random.random() < 0.0006 * horas:  # Chance de falha 
                     info["estado"] = False
                     self.estado = "Desligado"
                     print(f"A peça {peça} do computador {self.id} apresentou uma falha!")
+        
+        # Verifica se alguma peça tem vida útil abaixo de 34%
+        for peça, info in self.peças.items():
+            if info["vida_util"] <= 0.34 * info["vida_util"]:  # Verificando se a vida útil está abaixo de 34%
+                print(f"Atenção: A peça {peça} do computador {self.id} está com menos de 34% da vida útil restante!")
 
     def pode_avancar_no_tempo(self):
         """Verifica se o computador está funcional para avançar no tempo."""
@@ -91,3 +96,32 @@ class Computador:
     def obter_consumo_energia(self):
         """Obtém o consumo de energia atual do computador em kWh."""
         return self.calcular_consumo_energia()
+
+    def manutencao_preventiva(self):
+        """Realiza a manutenção preventiva, aumentará a vida útil das peças em 40% e cobrará o valor da manutenção."""
+        custo_manutencao_preventiva = 1800
+        # Verifica se alguma peça tem vida útil abaixo de 40%
+        peças_necessitando_manutencao = []
+        for peça, info in self.peças.items():
+            if info["vida_util"] <= 0.40 * info["vida_util"]:  # Se a vida útil da peça for abaixo de 40%
+                peças_necessitando_manutencao.append(peça)
+        
+        if peças_necessitando_manutencao:
+            print(f"O computador {self.id} precisa de manutenção preventiva nas seguintes peças devido à vida útil abaixo de 40%:")
+            for peça in peças_necessitando_manutencao:
+                print(f"  - {peça}")
+
+            # Aumenta em 40% a vida útil das peças
+            for peça, info in self.peças.items():
+                if info["vida_util"] <= 0.40 * info["vida_util"]:
+                    aumento_vida_util = info["vida_util"] * 0.40  # Aumento de 40% na vida útil
+                    info["vida_util"] += aumento_vida_util
+                    print(f"A vida útil da peça {peça} foi aumentada em 40%. Nova vida útil: {info['vida_util']} horas.")
+            
+            # Debita o valor da manutenção preventiva
+            self.ganhos -= custo_manutencao_preventiva
+            self.gasto_manutencao += custo_manutencao_preventiva
+            print(f"O computador {self.id} realizou manutenção preventiva no valor de R${custo_manutencao_preventiva:.2f}.")
+            self.estado = "Funcional"  # Após a manutenção preventiva, o computador volta a estar funcional
+        else:
+            print(f"O computador {self.id} não necessita de manutenção preventiva no momento.")

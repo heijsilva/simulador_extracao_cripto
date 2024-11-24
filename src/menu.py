@@ -18,13 +18,23 @@ SUCCESS_COLOR = "#8BC34A"  # Cor para mensagens de sucesso
 INFO_COLOR = "#FFFFFF"  # Cor para informações gerais
 EXIT_BUTTON_BG = "#D32F2F"  # Cor do botão de sair (vermelho)
 
+# Cores do tema White Mode
+WHITE_BG = "#FFFFFF"  # Fundo branco
+WHITE_FG = "#000000"  # Texto preto
+WHITE_LIGHT_BG = "#F0F0F0"  # Cor de fundo para caixas de texto e botões no modo claro
+WHITE_BUTTON_BG = "#E0E0E0"  # Cor de fundo dos botões no modo claro
+WHITE_BUTTON_FG = "#000000"  # Cor do texto dos botões no modo claro
+WHITE_HOVER_BG = "#D0D0D0"  # Cor ao passar o mouse nos botões no modo claro
+WHITE_TITLE_COLOR = "#000000"  # Cor do título no modo claro
+
 class InterfaceGrafica:
     def __init__(self, root, simulador):
         self.root = root
         self.simulador = simulador
         self.root.title("Extrator De Criptomoeda")
-        self.root.geometry("1280x800")  # Aumentando um pouco o tamanho inicial da janela
+        self.root.geometry("1600x900")  # Aumentando a resolução para 1600x900
         self.root.config(bg=DARK_BG)
+        self.dark_mode = True  # Inicialmente, o modo escuro está ativo
 
         # Redirecionar a saída para o terminal (Console)
         self.terminal_output = StringIO()
@@ -34,7 +44,7 @@ class InterfaceGrafica:
         self.terminal_frame = tk.Frame(self.root, bg=DARK_BG)
         self.terminal_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
         self.terminal_text = tk.Text(
-            self.terminal_frame, height=30, width=60,
+            self.terminal_frame, height=30, width=80,
             bg="#1C1C1C", fg=DARK_FG, font=("Arial", 12), wrap=tk.WORD, relief="flat"
         )
         self.terminal_text.pack(fill=tk.BOTH, expand=True)
@@ -51,7 +61,7 @@ class InterfaceGrafica:
         """Alterna entre fullscreen e janela normal."""
         is_fullscreen = self.root.attributes("-fullscreen")
         self.root.attributes("-fullscreen", not is_fullscreen)
-        self.root.geometry("1280x800" if is_fullscreen else "1920x1080")
+        self.root.geometry("1600x900" if is_fullscreen else "1920x1080")
         self.atualizar_layout()
 
     def criar_menu(self):
@@ -65,24 +75,27 @@ class InterfaceGrafica:
         )
         titulo.grid(row=0, column=0, pady=(20, 30))
 
-        # Botões para as opções do menu
-        self.criar_botao("Avancar no tempo", self.avancar_tempo).grid(row=1, column=0, sticky="ew", pady=10)
-        self.criar_botao("Manutencao em um PC", self.manutencao_computador).grid(row=2, column=0, sticky="ew", pady=10)
-        self.criar_botao("Manutencao em Todos", self.manutencao_todos).grid(row=3, column=0, sticky="ew", pady=10)
-        self.criar_botao("Gerar Status", self.gerar_insights).grid(row=4, column=0, sticky="ew", pady=10)
-        self.criar_botao("Gerar Graficos", self.gerar_graficos).grid(row=5, column=0, sticky="ew", pady=10)
-        self.criar_botao("Pagar Conta Energia", self.pagar_energia).grid(row=6, column=0, sticky="ew", pady=10)
-        self.criar_botao("Sair", self.sair, bg=EXIT_BUTTON_BG, width=15, height=2).grid(row=7, column=0, sticky="ew", pady=(30, 10))
+        # Botões para as opções do menu, com tamanho reduzido
+        self.criar_botao("Avancar no tempo", self.avancar_tempo).grid(row=1, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutencao em um PC", self.manutencao_computador).grid(row=2, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutencao em Todos", self.manutencao_todos).grid(row=3, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutencao Preventiva em um Computador", self.manutencao_preventiva).grid(row=4, column=0, sticky="ew", pady=8)
+        self.criar_botao("Gerar Status", self.gerar_insights).grid(row=5, column=0, sticky="ew", pady=8)
+        self.criar_botao("Gerar Graficos", self.gerar_graficos).grid(row=6, column=0, sticky="ew", pady=8)
+        self.criar_botao("Pagar Conta Energia", self.pagar_energia).grid(row=7, column=0, sticky="ew", pady=8)
+        self.criar_botao("Alternar Tema", self.alternar_tema).grid(row=8, column=0, sticky="ew", pady=8)
+        self.criar_botao("Limpar Terminal", self.limpar_terminal).grid(row=9, column=0, sticky="ew", pady=8)
+        self.criar_botao("Sair", self.sair, bg=EXIT_BUTTON_BG, width=20, height=2).grid(row=10, column=0, sticky="ew", pady=(30, 10))
 
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
-        self.menu_frame.grid_rowconfigure(7, weight=1)
+        self.menu_frame.grid_rowconfigure(10, weight=1)
 
-    def criar_botao(self, texto, comando, bg=BUTTON_BG, width=20, height=2):
+    def criar_botao(self, texto, comando, bg=BUTTON_BG, width=18, height=2):
         """Cria um botão com o estilo dark mode, bordas arredondadas e efeitos de hover."""
         botao = tk.Button(
             self.menu_frame, text=texto, command=comando,
-            font=("Roboto", 14, "bold"), bg=bg, fg=BUTTON_FG,
+            font=("Roboto", 12, "bold"), bg=bg, fg=BUTTON_FG,
             relief="flat", pady=10, width=width, height=height,
             activebackground=HOVER_BG, activeforeground=DARK_FG,
             borderwidth=0, highlightthickness=0
@@ -100,6 +113,7 @@ class InterfaceGrafica:
         self.terminal_text.delete(1.0, tk.END)
         self.terminal_text.insert(tk.END, output)
         self.terminal_text.config(state=tk.DISABLED)
+        self.terminal_text.see(tk.END)  # Scroll automático para o final
 
     def avancar_tempo(self):
         horas = int(self.exibir_input_dialog("Quantas horas deseja avançar?"))
@@ -115,51 +129,86 @@ class InterfaceGrafica:
         self.simulador.realizar_manutencao_em_todos()
         self.atualizar_terminal()
 
+    def manutencao_preventiva(self):
+        """Realiza a manutenção preventiva em um computador específico."""
+        try:
+            computador_id = int(self.exibir_input_dialog("Digite o ID do computador (1 a 5) para manutenção preventiva:"))
+            if 1 <= computador_id <= 5:
+                self.simulador.realizar_manutencao(computador_id)
+                self.atualizar_terminal()
+            else:
+                print("ID inválido! O ID do computador deve ser entre 1 e 5.")
+                self.atualizar_terminal()
+        except ValueError:
+            print("Entrada inválida. Por favor, digite um número válido para o ID do computador.")
+            self.atualizar_terminal()
+
     def gerar_insights(self):
+        """Gera insights baseados no estado atual do simulador."""
         self.simulador.gerar_insights()
         self.atualizar_terminal()
 
     def gerar_graficos(self):
-        """Chama a função para gerar gráficos de lucros"""
+        """Chama a função para gerar gráficos de lucros."""
         graficos = Graficos(self.simulador)  # Instancia a classe Graficos com o simulador
         graficos.gerar_graficos_lucros()  # Chama a função para gerar os gráficos de lucros
         self.atualizar_terminal()
 
     def pagar_energia(self):
+        """Realiza o pagamento da conta de energia."""
         self.simulador.pagar_energia()
         self.atualizar_terminal()
 
+    def alternar_tema(self):
+        """Alterna entre Dark Mode e White Mode."""
+        if self.dark_mode:
+            # Alterando para o modo claro (White Mode)
+            self.root.config(bg=WHITE_BG)
+            self.menu_frame.config(bg=WHITE_LIGHT_BG)
+            self.terminal_frame.config(bg=WHITE_BG)
+            self.terminal_text.config(bg=WHITE_BG, fg=WHITE_FG)
+            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
+            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
+            for widget in self.menu_frame.winfo_children():
+                widget.config(bg=WHITE_BUTTON_BG, fg=WHITE_BUTTON_FG)
+            self.dark_mode = False
+        else:
+            # Alterando para o modo escuro (Dark Mode)
+            self.root.config(bg=DARK_BG)
+            self.menu_frame.config(bg="#2C2C2C")
+            self.terminal_frame.config(bg=DARK_BG)
+            self.terminal_text.config(bg="#1C1C1C", fg=DARK_FG)
+            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
+            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
+            for widget in self.menu_frame.winfo_children():
+                widget.config(bg=BUTTON_BG, fg=BUTTON_FG)
+            self.dark_mode = True
+        self.atualizar_terminal()
+
+    def limpar_terminal(self):
+        """Limpa o terminal."""
+        self.terminal_text.config(state=tk.NORMAL)
+        self.terminal_text.delete(1.0, tk.END)
+        self.terminal_text.config(state=tk.DISABLED)
+
     def sair(self):
+        """Finaliza o programa."""
         self.root.quit()
 
-    def exibir_input_dialog(self, mensagem):
-        """Exibe uma caixa de entrada para pegar a resposta do usuário."""
-        resposta = simpledialog.askstring("Entrada", mensagem)
-        return resposta
+    def exibir_input_dialog(self, prompt):
+        """Exibe um dialog de entrada para coletar um valor do usuário."""
+        return simpledialog.askstring("Entrada", prompt, parent=self.root)
 
     def atualizar_layout(self):
-        """Atualiza o layout responsivo quando em fullscreen ou janela normal."""
-        if self.root.attributes("-fullscreen"):
-            self.terminal_frame.grid(row=0, column=1, rowspan=2, sticky="nsew")
-            self.menu_frame.grid(row=0, column=0, sticky="nsew")
-            self.root.grid_rowconfigure(0, weight=1)
-            self.root.grid_columnconfigure(1, weight=2)
-        else:
-            self.terminal_frame.grid(row=0, column=1, sticky="nsew")
-            self.menu_frame.grid(row=0, column=0, sticky="nsew")
-            self.root.grid_rowconfigure(0, weight=1)
-            self.root.grid_columnconfigure(0, weight=1)
-            self.root.grid_columnconfigure(1, weight=1)
+        """Atualiza o layout do menu quando o tamanho da janela muda."""
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=3)
+        self.root.grid_columnconfigure(0, weight=1)
+        self.menu_frame.grid_rowconfigure(10, weight=1)
+        self.menu_frame.grid_columnconfigure(0, weight=1)
 
 if __name__ == "__main__":
-    # Exemplo de criação do simulador (você deve adaptar conforme a implementação real)
-    simulador = Simulador()
-
-    # Criar a janela principal do Tkinter
     root = tk.Tk()
-
-    # Criar a interface gráfica
+    simulador = Simulador()  # Supondo que você tenha uma classe simulador já implementada
     app = InterfaceGrafica(root, simulador)
-
-    # Iniciar o loop principal do Tkinter
     root.mainloop()

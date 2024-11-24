@@ -9,12 +9,12 @@ class Simulador:
         self.histórico_falhas = []
         self.custo_energia_por_hora = 3.00  # Aumento no custo de energia por kWh (R$3.00 por kWh)
         self.precos_moedas = {
-            "Bitcoin": 120000,
-            "Ethereum": 9000,
+            "Bitcoin": 190000,
+            "Ethereum": 000,
             "Dogecoin": 4,
             "Litecoin": 500,
-            "Solana": 22,
-            "Cardano": 10,
+            "Solana": 225,
+            "Cardano": 50,
             "Polkadot": 30,
         }
         
