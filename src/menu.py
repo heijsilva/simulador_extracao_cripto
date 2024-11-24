@@ -134,7 +134,8 @@ class InterfaceGrafica:
         try:
             computador_id = int(self.exibir_input_dialog("Digite o ID do computador (1 a 5) para manutenção preventiva:"))
             if 1 <= computador_id <= 5:
-                self.simulador.realizar_manutencao(computador_id)
+                computador = self.simulador.computadores[computador_id - 1]
+                computador.manutencao_preventiva()  # Chama a manutenção preventiva
                 self.atualizar_terminal()
             else:
                 print("ID inválido! O ID do computador deve ser entre 1 e 5.")

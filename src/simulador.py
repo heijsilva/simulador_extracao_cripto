@@ -59,6 +59,15 @@ class Simulador:
             # Simula falhas aleatórias e diminuição da vida útil
             computador.simular_falhas(horas)
 
+            # Verifica se é necessário realizar a manutenção preventiva
+            if computador.vida_util_precisa_manutencao():
+                print(f"\nComputador {computador.id} precisa de manutenção preventiva!")
+                # Você pode decidir aqui se quer perguntar ao usuário se ele deseja realizar a manutenção
+                # Por exemplo:
+                # resposta = input("Deseja realizar a manutenção preventiva? (s/n): ")
+                # if resposta.lower() == 's':
+                #    computador.manutencao_preventiva()
+
             # Calcular o consumo de energia com base no uso
         if ganhos_computadores:
             maior_ganho = max(ganho for _, ganho in ganhos_computadores)
@@ -90,7 +99,7 @@ class Simulador:
         print("\nAvanço de tempo concluído!")
 
     def pagar_energia(self):
-        """Paga a conta de energia e debita do saldo total."""
+        """Paga a conta de energia e debita do saldo total.""" 
         saldo_total = sum(c.ganhos for c in self.computadores)
         
         if saldo_total >= self.conta_energia_acumulada:
@@ -114,7 +123,7 @@ class Simulador:
             computador.realizar_manutencao()
 
     def gerar_insights(self):
-        """Gera insights sobre o status de cada computador e o custo de energia individual."""
+        """Gera insights sobre o status de cada computador e o custo de energia individual.""" 
         print("\n--- Insights dos Computadores ---")
         
         lucro_total = 0
@@ -161,3 +170,4 @@ class Simulador:
         print(f"  Consumo total de energia: {consumo_total_energia:.2f} kWh")
         print(f"  Conta de energia acumulada: R${self.conta_energia_acumulada:.2f}")
         print(f"  Custo total de manutenção: R${total_manutencao:.2f}")
+
