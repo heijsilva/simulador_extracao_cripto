@@ -209,6 +209,6 @@ class InterfaceGrafica:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    simulador = Simulador()  # Supondo que você tenha uma classe simulador já implementada
+    simulador = Simulador()  
     app = InterfaceGrafica(root, simulador)
     root.mainloop()
