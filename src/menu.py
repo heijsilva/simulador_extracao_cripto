@@ -18,14 +18,14 @@ SUCCESS_COLOR = "#8BC34A"  # Cor para mensagens de sucesso
 INFO_COLOR = "#FFFFFF"  # Cor para informações gerais
 EXIT_BUTTON_BG = "#D32F2F"  # Cor do botão de sair (vermelho)
 
-# Cores do tema White Mode
+# Cores do tema White Mode atualizadas
 WHITE_BG = "#FFFFFF"  # Fundo branco
-WHITE_FG = "#000000"  # Texto preto
+WHITE_FG = "#FFD700"  # Texto dourado
 WHITE_LIGHT_BG = "#F0F0F0"  # Cor de fundo para caixas de texto e botões no modo claro
-WHITE_BUTTON_BG = "#E0E0E0"  # Cor de fundo dos botões no modo claro
-WHITE_BUTTON_FG = "#000000"  # Cor do texto dos botões no modo claro
-WHITE_HOVER_BG = "#D0D0D0"  # Cor ao passar o mouse nos botões no modo claro
-WHITE_TITLE_COLOR = "#000000"  # Cor do título no modo claro
+WHITE_BUTTON_BG = "#FFFFFF"  # Cor de fundo dos botões no modo claro (branco)
+WHITE_BUTTON_FG = "#000000"  # Cor do texto dos botões no modo claro (preto)
+WHITE_HOVER_BG = "#D3D3D3"  # Cor ao passar o mouse nos botões (cinza claro)
+WHITE_TITLE_COLOR = "#FFD700"  # Cor do título no modo claro (dourado)
 
 class InterfaceGrafica:
     def __init__(self, root, simulador):
@@ -71,17 +71,17 @@ class InterfaceGrafica:
 
         titulo = tk.Label(
             self.menu_frame, text="Extrator De Criptomoeda",
-            font=("Roboto", 24, "bold"), fg=TITLE_COLOR, bg="#2C2C2C"
+            font=("Roboto", 24, "bold"), fg=WHITE_TITLE_COLOR, bg="#2C2C2C"
         )
         titulo.grid(row=0, column=0, pady=(20, 30))
 
         # Botões para as opções do menu, com tamanho reduzido
-        self.criar_botao("Avancar no tempo", self.avancar_tempo).grid(row=1, column=0, sticky="ew", pady=8)
-        self.criar_botao("Manutencao em um PC", self.manutencao_computador).grid(row=2, column=0, sticky="ew", pady=8)
-        self.criar_botao("Manutencao em Todos", self.manutencao_todos).grid(row=3, column=0, sticky="ew", pady=8)
-        self.criar_botao("Manutencao Preventiva em um Computador", self.manutencao_preventiva).grid(row=4, column=0, sticky="ew", pady=8)
+        self.criar_botao("Avançar no tempo", self.avancar_tempo).grid(row=1, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutenção em um PC", self.manutencao_computador).grid(row=2, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutenção em Todos", self.manutencao_todos).grid(row=3, column=0, sticky="ew", pady=8)
+        self.criar_botao("Manutenção Preventiva em um Computador", self.manutencao_preventiva).grid(row=4, column=0, sticky="ew", pady=8)
         self.criar_botao("Gerar Status", self.gerar_insights).grid(row=5, column=0, sticky="ew", pady=8)
-        self.criar_botao("Gerar Graficos", self.gerar_graficos).grid(row=6, column=0, sticky="ew", pady=8)
+        self.criar_botao("Gerar Gráficos", self.gerar_graficos).grid(row=6, column=0, sticky="ew", pady=8)
         self.criar_botao("Pagar Conta Energia", self.pagar_energia).grid(row=7, column=0, sticky="ew", pady=8)
         self.criar_botao("Alternar Tema", self.alternar_tema).grid(row=8, column=0, sticky="ew", pady=8)
         self.criar_botao("Limpar Terminal", self.limpar_terminal).grid(row=9, column=0, sticky="ew", pady=8)
@@ -91,18 +91,18 @@ class InterfaceGrafica:
         self.root.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid_rowconfigure(10, weight=1)
 
-    def criar_botao(self, texto, comando, bg=BUTTON_BG, width=18, height=2):
-        """Cria um botão com o estilo dark mode, bordas arredondadas e efeitos de hover."""
+    def criar_botao(self, texto, comando, bg=WHITE_BUTTON_BG, width=18, height=2):
+        """Cria um botão com o estilo White Mode, bordas arredondadas e efeitos de hover."""
         botao = tk.Button(
             self.menu_frame, text=texto, command=comando,
-            font=("Roboto", 12, "bold"), bg=bg, fg=BUTTON_FG,
+            font=("Roboto", 12, "bold"), bg=bg, fg=WHITE_BUTTON_FG,
             relief="flat", pady=10, width=width, height=height,
-            activebackground=HOVER_BG, activeforeground=DARK_FG,
+            activebackground=WHITE_HOVER_BG, activeforeground=WHITE_FG,
             borderwidth=0, highlightthickness=0
         )
         # Aplicando arredondamento ao botão
         botao.config(highlightbackground=bg, padx=10, pady=5)
-        botao.bind("<Enter>", lambda e: botao.config(bg=HOVER_BG))
+        botao.bind("<Enter>", lambda e: botao.config(bg=WHITE_HOVER_BG))
         botao.bind("<Leave>", lambda e: botao.config(bg=bg))
         return botao
 
@@ -114,6 +114,32 @@ class InterfaceGrafica:
         self.terminal_text.insert(tk.END, output)
         self.terminal_text.config(state=tk.DISABLED)
         self.terminal_text.see(tk.END)  # Scroll automático para o final
+
+    def alternar_tema(self):
+        """Alterna entre Dark Mode e White Mode."""
+        if self.dark_mode:
+            # Alterando para o modo claro (White Mode)
+            self.root.config(bg=WHITE_BG)
+            self.menu_frame.config(bg=WHITE_LIGHT_BG)
+            self.terminal_frame.config(bg=WHITE_BG)
+            self.terminal_text.config(bg=WHITE_BG, fg=WHITE_FG)
+            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
+            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
+            for widget in self.menu_frame.winfo_children():
+                widget.config(bg=WHITE_BUTTON_BG, fg=WHITE_BUTTON_FG)
+            self.dark_mode = False
+        else:
+            # Alterando para o modo escuro (Dark Mode)
+            self.root.config(bg=DARK_BG)
+            self.menu_frame.config(bg="#2C2C2C")
+            self.terminal_frame.config(bg=DARK_BG)
+            self.terminal_text.config(bg="#1C1C1C", fg=DARK_FG)
+            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
+            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
+            for widget in self.menu_frame.winfo_children():
+                widget.config(bg=BUTTON_BG, fg=BUTTON_FG)
+            self.dark_mode = True
+        self.atualizar_terminal()
 
     def avancar_tempo(self):
         horas = int(self.exibir_input_dialog("Quantas horas deseja avançar?"))
@@ -158,32 +184,6 @@ class InterfaceGrafica:
     def pagar_energia(self):
         """Realiza o pagamento da conta de energia."""
         self.simulador.pagar_energia()
-        self.atualizar_terminal()
-
-    def alternar_tema(self):
-        """Alterna entre Dark Mode e White Mode."""
-        if self.dark_mode:
-            # Alterando para o modo claro (White Mode)
-            self.root.config(bg=WHITE_BG)
-            self.menu_frame.config(bg=WHITE_LIGHT_BG)
-            self.terminal_frame.config(bg=WHITE_BG)
-            self.terminal_text.config(bg=WHITE_BG, fg=WHITE_FG)
-            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
-            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
-            for widget in self.menu_frame.winfo_children():
-                widget.config(bg=WHITE_BUTTON_BG, fg=WHITE_BUTTON_FG)
-            self.dark_mode = False
-        else:
-            # Alterando para o modo escuro (Dark Mode)
-            self.root.config(bg=DARK_BG)
-            self.menu_frame.config(bg="#2C2C2C")
-            self.terminal_frame.config(bg=DARK_BG)
-            self.terminal_text.config(bg="#1C1C1C", fg=DARK_FG)
-            self.terminal_text.tag_configure("stderr", foreground=ERROR_COLOR)
-            self.terminal_text.tag_configure("stdout", foreground=INFO_COLOR)
-            for widget in self.menu_frame.winfo_children():
-                widget.config(bg=BUTTON_BG, fg=BUTTON_FG)
-            self.dark_mode = True
         self.atualizar_terminal()
 
     def limpar_terminal(self):
