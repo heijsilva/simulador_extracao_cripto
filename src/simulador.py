@@ -124,17 +124,17 @@ class Simulador:
 
     def gerar_insights(self):
         """Gera insights sobre o status de cada computador e o custo de energia individual.""" 
-        print("\n--- Insights dos Computadores ---")
+        resultado = "\n--- Insights dos Computadores ---\n"
         
         lucro_total = 0
         consumo_total_energia = 0  # Variável para somar o custo total de energia
         total_manutencao = 0  # Variável para acumular o total de manutenção realizada
 
         for computador in self.computadores:
-            print(f"\nComputador ID: {computador.id}")
-            print(f"  Estado: {computador.estado}")
-            print(f"  Ganhos: R${computador.ganhos:.2f}")
-            print(f"  Gasto total com manutenção: R${computador.gasto_manutencao:.2f}")
+            resultado += f"\nComputador ID: {computador.id}\n"
+            resultado += f"  Estado: {computador.estado}\n"
+            resultado += f"  Ganhos: R${computador.ganhos:.2f}\n"
+            resultado += f"  Gasto total com manutenção: R${computador.gasto_manutencao:.2f}\n"
 
             # Custo da manutenção das peças quebradas
             custo_manutencao = 0
@@ -142,7 +142,7 @@ class Simulador:
 
             for peça, info in computador.peças.items():
                 estado = "Funcionando" if info["estado"] else "Quebrado"
-                print(f"  Peça: {peça}, Status: {estado}, Vida Útil: {info['vida_util']} horas")
+                resultado += f"  Peça: {peça}, Status: {estado}, Vida Útil: {info['vida_util']} horas\n"
                 if not info["estado"]:  # Se a peça estiver quebrada
                     # Calcular o custo de manutenção da peça quebrada
                     custo_peça = info["custo_manutencao"]
@@ -151,23 +151,24 @@ class Simulador:
 
             # Exibe os custos de manutenção de peças quebradas
             if manutencao_por_computador:
-                print("\n  Manutenção necessária para as peças quebradas:")
+                resultado += "\n  Manutenção necessária para as peças quebradas:\n"
                 for manutencao in manutencao_por_computador:
-                    print(manutencao)
+                    resultado += f"{manutencao}\n"
 
             # Adicionando o custo de manutenção ao total
             total_manutencao += custo_manutencao
 
             # Exibe o consumo total de energia baseado no tempo avançado
             consumo_total = self.energia_gasta_por_computador[computador.id]  # Agora é o consumo total baseado nas horas avançadas
-            print(f"  Consumo total de energia: {consumo_total:.2f} kWh")
+            resultado += f"  Consumo total de energia: {consumo_total:.2f} kWh\n"
 
             lucro_total += computador.ganhos
             consumo_total_energia += consumo_total
 
-        print(f"\n--- Resumo Geral ---")
-        print(f"  Lucro total: R${lucro_total:.2f}")
-        print(f"  Consumo total de energia: {consumo_total_energia:.2f} kWh")
-        print(f"  Conta de energia acumulada: R${self.conta_energia_acumulada:.2f}")
-        print(f"  Custo total de manutenção: R${total_manutencao:.2f}")
-
+        resultado += "\n--- Resumo Geral ---\n"
+        resultado += f"  Lucro total: R${lucro_total:.2f}\n"
+        resultado += f"  Consumo total de energia: {consumo_total_energia:.2f} kWh\n"
+        resultado += f"  Conta de energia acumulada: R${self.conta_energia_acumulada:.2f}\n"
+        resultado += f"  Custo total de manutenção: R${total_manutencao:.2f}\n"
+        
+        return resultado

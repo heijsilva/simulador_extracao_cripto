@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, simpledialog
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 import sys
 from io import StringIO
 from simulador import Simulador
@@ -35,6 +37,9 @@ class InterfaceGrafica:
         self.root.geometry("1600x900")  # Aumentando a resolução para 1600x900
         self.root.config(bg=DARK_BG)
         self.dark_mode = True  # Inicialmente, o modo escuro está ativo
+        
+        # Definindo o comportamento ao clicar no botão "X"
+        self.root.protocol("WM_DELETE_WINDOW", self.encerrar_programa)
 
         # Redirecionar a saída para o terminal (Console)
         self.terminal_output = StringIO()
@@ -85,7 +90,7 @@ class InterfaceGrafica:
         self.criar_botao("Pagar Conta Energia", self.pagar_energia).grid(row=7, column=0, sticky="ew", pady=8)
         self.criar_botao("Alternar Tema", self.alternar_tema).grid(row=8, column=0, sticky="ew", pady=8)
         self.criar_botao("Limpar Terminal", self.limpar_terminal).grid(row=9, column=0, sticky="ew", pady=8)
-        self.criar_botao("Sair", self.sair, bg=EXIT_BUTTON_BG, width=20, height=2).grid(row=10, column=0, sticky="ew", pady=(30, 10))
+        self.criar_botao("Sair", self.encerrar_programa, bg=EXIT_BUTTON_BG, width=20, height=2).grid(row=10, column=0, sticky="ew", pady=(30, 10))
 
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
@@ -171,15 +176,32 @@ class InterfaceGrafica:
             self.atualizar_terminal()
 
     def gerar_insights(self):
-        """Gera insights baseados no estado atual do simulador."""
-        self.simulador.gerar_insights()
-        self.atualizar_terminal()
+        """Gera insights baseados no estado atual do simulador e exibe em uma nova janela."""
+        # Gerar os insights do simulador
+        insights = self.simulador.gerar_insights()
 
-    def gerar_graficos(self):
-        """Chama a função para gerar gráficos de lucros."""
-        graficos = Graficos(self.simulador)  # Instancia a classe Graficos com o simulador
-        graficos.gerar_graficos_lucros()  # Chama a função para gerar os gráficos de lucros
-        self.atualizar_terminal()
+        # Criar a nova janela para exibir os insights
+        insights_window = tk.Toplevel(self.root)
+        insights_window.title("Insights de Sistema")
+        insights_window.geometry("800x500")  # Ajuste o tamanho conforme necessário
+        insights_window.configure(bg=DARK_BG)
+
+        titulo = tk.Label(
+            insights_window, text="Insights do Simulador",
+            font=("Roboto", 18, "bold"), fg=TITLE_COLOR, bg=DARK_BG
+        )
+        titulo.pack(pady=10)
+
+        # Criar uma área de texto para mostrar os insights
+        insights_text = tk.Text(
+            insights_window, height=15, width=90, wrap=tk.WORD,
+            bg="#1C1C1C", fg=DARK_FG, font=("Arial", 12), relief="flat"
+        )
+        insights_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # Insira os insights no campo de texto
+        insights_text.insert(tk.END, insights)
+        insights_text.config(state=tk.DISABLED)  # Torna o texto não-editável
 
     def pagar_energia(self):
         """Realiza o pagamento da conta de energia."""
@@ -192,9 +214,6 @@ class InterfaceGrafica:
         self.terminal_text.delete(1.0, tk.END)
         self.terminal_text.config(state=tk.DISABLED)
 
-    def sair(self):
-        """Finaliza o programa."""
-        self.root.quit()
 
     def exibir_input_dialog(self, prompt):
         """Exibe um dialog de entrada para coletar um valor do usuário."""
@@ -207,6 +226,103 @@ class InterfaceGrafica:
         self.root.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid_rowconfigure(10, weight=1)
         self.menu_frame.grid_columnconfigure(0, weight=1)
+        
+    def gerar_graficos(self):
+        """Abre uma nova janela para exibir gráficos interativos com rolagem."""
+        graficos = Graficos(self.simulador)  # Instancia a classe Graficos
+        graficos_gerados = graficos.gerar_graficos_lucros()  # Lista de figuras geradas pela função
+
+        # Criar a nova janela
+        graficos_window = tk.Toplevel(self.root)
+        graficos_window.title("Gráficos de Dados")
+        graficos_window.geometry("1366x720")  # Ajuste o tamanho conforme necessário
+        graficos_window.configure(bg=DARK_BG)
+
+        titulo = tk.Label(
+            graficos_window, text="Gráficos Disponíveis",
+            font=("Roboto", 20, "bold"), fg=TITLE_COLOR, bg=DARK_BG
+        )
+        titulo.pack(pady=10)
+
+        # Criar um container para os gráficos com rolagem
+        canvas = tk.Canvas(graficos_window, bg=DARK_BG)
+        scrollbar = tk.Scrollbar(graficos_window, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg=DARK_BG)
+        
+        # Configurar a rolagem com o mouse
+        canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
+        # Atualiza a regiao do scroll quando o conteudo muda
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        # Crio a janela para rolagem dentro do canvas
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.config(yscrollcommand=scrollbar.set)
+
+        # Posicionar a barra de rolagem e o canvas
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(fill=tk.BOTH, expand=True)
+
+        # Adiciona gráficos ao frame do scroll
+        for i, figura in enumerate(graficos_gerados):
+            self.adicionar_grafico(scrollable_frame, figura, f"Gráfico {i + 1}")
+
+    def adicionar_grafico(self, container, figura, titulo):
+        """Adiciona um gráfico em um frame com título e botão de maximizar."""
+        grafico_frame = tk.Frame(container, bg=DARK_BG, pady=10)
+        grafico_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        # Adiciona o título do gráfico
+        grafico_titulo = tk.Label(
+            grafico_frame, text=titulo, font=("Roboto", 14, "bold"), fg=WHITE_FG, bg=DARK_BG
+        )
+        grafico_titulo.pack(pady=5)
+
+        # Redimensionando o gráfico para o tamanho ideal
+        largura = 1000  # Largura fixa do gráfico
+        altura = 600   # Altura fixa do gráfico
+        figura.set_size_inches(largura / 100, altura / 100)  # Ajusta o tamanho do gráfico (tamanho em polegadas)
+
+        # Canvas do gráfico
+        canvas = FigureCanvasTkAgg(figura, master=grafico_frame)
+        grafico_widget = canvas.get_tk_widget()
+        grafico_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Botões
+        botao_expandir = tk.Button(
+            grafico_frame, text="Expandir", bg=BUTTON_BG, fg=BUTTON_FG,
+            command=lambda: self.expandir_grafico(figura, container)
+        )
+        botao_expandir.pack(side=tk.RIGHT, padx=10)
+
+    def expandir_grafico(self, figura, janela):
+        """Exibe o gráfico em tela cheia."""
+        full_window = tk.Toplevel(janela)
+        full_window.title("Gráfico Expandido")
+        full_window.geometry("1920x1080")
+        full_window.configure(bg=DARK_BG)
+
+        # Redimensionando o gráfico para a tela cheia
+        figura.set_size_inches(15, 10)  # Ajuste o tamanho conforme necessário
+
+        canvas = FigureCanvasTkAgg(figura, master=full_window)
+        grafico_widget = canvas.get_tk_widget()
+        grafico_widget.pack(fill=tk.BOTH, expand=True)
+
+        botao_fechar = tk.Button(
+            full_window, text="Fechar", bg=EXIT_BUTTON_BG, fg=BUTTON_FG,
+            command=full_window.destroy
+        )
+        botao_fechar.pack(pady=10)
+        
+    def encerrar_programa(self):
+        """Confirma se o usuário deseja encerrar o programa."""
+        resposta = tk.messagebox.askyesno("Encerrar", "Tem certeza de que deseja sair?")
+        if resposta:
+            self.root.quit()
 
 if __name__ == "__main__":
     root = tk.Tk()
