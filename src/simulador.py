@@ -7,7 +7,7 @@ class Simulador:
         self.histórico_saldo = []
         self.histórico_consumo = []
         self.histórico_falhas = []
-        self.custo_energia_por_hora = 3.00  # Aumento no custo de energia por kWh (R$3.00 por kWh)
+        self.custo_energia_por_hora = 3.00  # custo de energia por kWh (R$3.00 por kWh)
         self.precos_moedas = {
             "Bitcoin": 190000,
             "Ethereum": 5000,
@@ -40,7 +40,7 @@ class Simulador:
 
                 for _ in range(horas):
                     for moeda, preco in self.precos_moedas.items():
-                        if random.random() < 0.05:  # 5% de chance de minerar por hora
+                        if random.random() < 0.03:  # 3% de chance de minerar por hora
                             quantidade = random.uniform(0.001, 0.01)
                             mineracao_por_moeda[moeda]["quantidade"] += quantidade
                             mineracao_por_moeda[moeda]["valor"] += quantidade * preco
@@ -56,17 +56,12 @@ class Simulador:
                 # Armazenar o valor minerado para ajuste do uso
                 ganhos_computadores.append((computador, valor_total_minerado))
 
-            # Simula falhas aleatórias e diminuição da vida útil
+            # Simula falhas aleatórias
             computador.simular_falhas(horas)
 
             # Verifica se é necessário realizar a manutenção preventiva
             if computador.vida_util_precisa_manutencao():
                 print(f"\nComputador {computador.id} precisa de manutenção preventiva!")
-                # Você pode decidir aqui se quer perguntar ao usuário se ele deseja realizar a manutenção
-                # Por exemplo:
-                # resposta = input("Deseja realizar a manutenção preventiva? (s/n): ")
-                # if resposta.lower() == 's':
-                #    computador.manutencao_preventiva()
 
             # Calcular o consumo de energia com base no uso
         if ganhos_computadores:
@@ -155,7 +150,7 @@ class Simulador:
                 for manutencao in manutencao_por_computador:
                     resultado += f"{manutencao}\n"
 
-            # Adicionando o custo de manutenção ao total
+            # custo manu total
             total_manutencao += custo_manutencao
 
             # Exibe o consumo total de energia baseado no tempo avançado

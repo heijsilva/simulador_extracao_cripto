@@ -5,9 +5,8 @@ import matplotlib.pyplot as plt
 import sys
 from io import StringIO
 from simulador import Simulador
-from graficos import Graficos  # Certifique-se de que a classe Graficos está importada corretamente
+from graficos import Graficos 
 
-# Cores do tema Dark Mode conforme a imagem
 DARK_BG = "#2E2E2E"  # Fundo mais escuro
 DARK_FG = "#FFFFFF"  # Texto branco
 LIGHT_BG = "#3A3A3A"  # Cor de fundo para caixas de texto e botões
@@ -20,7 +19,6 @@ SUCCESS_COLOR = "#8BC34A"  # Cor para mensagens de sucesso
 INFO_COLOR = "#FFFFFF"  # Cor para informações gerais
 EXIT_BUTTON_BG = "#D32F2F"  # Cor do botão de sair (vermelho)
 
-# Cores do tema White Mode atualizadas
 WHITE_BG = "#FFFFFF"  # Fundo branco
 WHITE_FG = "#FFD700"  # Texto dourado
 WHITE_LIGHT_BG = "#F0F0F0"  # Cor de fundo para caixas de texto e botões no modo claro

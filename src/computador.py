@@ -69,7 +69,7 @@ class Computador:
                     info["estado"] = False
                     self.estado = "Desligado"
                     self.log(f"A peça {peça} do computador {self.id} quebrou devido ao fim da vida útil!")
-                if random.random() < 0.000005 * horas:  # Chance de falha 
+                if random.random() < 0.000008 * horas:  # Chance de falha 
                     info["estado"] = False
                     self.estado = "Desligado"
                     self.log(f"A peça {peça} do computador {self.id} apresentou uma falha!")
@@ -103,8 +103,8 @@ class Computador:
             """Realiza manutenção preventiva nas peças e aumenta sua vida útil em 40%."""
             total_custo_preventiva = 0
             for peça, info in self.peças.items():
-                # Aumenta a vida útil da peça em 40%
-                incremento_vida_util = info["vida_util"] * 0.40
+                # Aumenta a vida útil da peça em 35%
+                incremento_vida_util = info["vida_util"] * 0.35
                 info["vida_util"] += incremento_vida_util
                 total_custo_preventiva += info["custo_manutencao"]
                 print(f"A peça {peça} foi mantida preventivamente. Vida útil aumentada para {info['vida_util']:.2f} horas.")
