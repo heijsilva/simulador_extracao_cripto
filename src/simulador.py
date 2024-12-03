@@ -40,7 +40,7 @@ class Simulador:
 
                 for _ in range(horas):
                     for moeda, preco in self.precos_moedas.items():
-                        if random.random() < 0.03:  # 3% de chance de minerar por hora
+                        if random.random() < 0.035:  # 3,5% de chance de minerar por hora
                             quantidade = random.uniform(0.001, 0.01)
                             mineracao_por_moeda[moeda]["quantidade"] += quantidade
                             mineracao_por_moeda[moeda]["valor"] += quantidade * preco
@@ -73,7 +73,7 @@ class Simulador:
             uso_computador = 70 + (96 - 70) * (valor_total_minerado / maior_ganho) if maior_ganho > 0 else 70
 
             # Ajuste o consumo com base no uso
-            consumo_base = 10  # Consumo base de 10 kWh por hora (para 70% de uso)
+            consumo_base = 8  # Consumo base de 10 kWh por hora (para 70% de uso)
             consumo_ajustado = consumo_base * (uso_computador / 70)  # Aumenta o consumo proporcionalmente ao uso
 
             # Acumula o custo de energia para este computador

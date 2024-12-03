@@ -20,7 +20,7 @@ INFO_COLOR = "#FFFFFF"  # Cor para informações gerais
 EXIT_BUTTON_BG = "#D32F2F"  # Cor do botão de sair (vermelho)
 
 WHITE_BG = "#FFFFFF"  # Fundo branco
-WHITE_FG = "#FFD700"  # Texto dourado
+WHITE_FG = "#D32F2F"  # Texto dourado
 WHITE_LIGHT_BG = "#F0F0F0"  # Cor de fundo para caixas de texto e botões no modo claro
 WHITE_BUTTON_BG = "#FFFFFF"  # Cor de fundo dos botões no modo claro (branco)
 WHITE_BUTTON_FG = "#000000"  # Cor do texto dos botões no modo claro (preto)
